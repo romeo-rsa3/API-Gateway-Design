@@ -1,0 +1,30 @@
+# gateway.config.yml
+
+name: campus-compass-gateway
+server:
+  port: 8080  # Gateway Port (the port on which API Gateway will run)
+
+http:
+  port: 8080
+
+# Define the routes and services that the API Gateway will handle
+services:
+  - name: campus-compass-backend
+    url: 'http://localhost:5000'  # Backend service URL (local for now)
+    apiEndpoints:
+      - url: /api/auth/*   # Auth routes handled by the backend
+        methods: [POST, GET]
+      - url: /api/locations/*  # Location routes handled by the backend
+        methods: [POST, GET]
+      - url: /api/admin/*  # Admin routes handled by the backend
+        methods: [POST, GET]
+
+# Proxy configuration to forward requests to backend
+proxy:
+  - url: /api/*
+    service: campus-compass-backend
+
+# Configuring middleware here
+middleware:
+  - name: passport-middleware
+    path: ./middleware/passport.js
